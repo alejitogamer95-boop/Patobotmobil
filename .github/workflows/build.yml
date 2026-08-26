@@ -7,17 +7,31 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout del código
       uses: actions/checkout@v4
 
-    - name: Build con Buildozer Action
-      uses: LorenzoMorelli/buildozer-action@v1
+    - name: Configurar Java JDK 17
+      uses: actions/setup-java@v4
       with:
-        buildozer_version: master
-        command: buildozer android debug
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: Instalar dependencias del sistema
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev build-essential
+
+    - name: Instalar Buildozer y Cython
+      run: |
+        pip install --upgrade pip
+        pip install buildozer cython
+
+    - name: Compilar APK aceptando licencias
+      run: |
+        yes | buildozer android debug
 
     - name: Subir APK como Artefacto
       uses: actions/upload-artifact@v4
