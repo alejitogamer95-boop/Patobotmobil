@@ -7,23 +7,17 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
 
     steps:
     - name: Checkout del código
       uses: actions/checkout@v4
 
-    - name: Configurar Java JDK 17
-      uses: actions/setup-java@v4
+    - name: Build con Buildozer Action
+      uses: LorenzoMorelli/buildozer-action@v1
       with:
-        distribution: 'zulu'
-        java-version: '17'
-
-    - name: Instalar Buildozer en Docker
-      uses: ArtemisProject/buildozer-action@v1
-      with:
+        buildozer_version: master
         command: buildozer android debug
-        subfolder: .
 
     - name: Subir APK como Artefacto
       uses: actions/upload-artifact@v4
